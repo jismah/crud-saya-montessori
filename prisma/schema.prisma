@@ -17,19 +17,19 @@ model Student {
   lastName2 String?
   status String
   parent Parent @relation(fields: [idCardParent], references: [identityCard])
-  idCardParent Int
-  
+  idCardParent BigInt
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   deleted Boolean @default(false)
 }
 
 model Parent {
-  identityCard Int @id
+  identityCard BigInt @id
   name String
   lastName1 String
   lastName2 String?
-  telephone Int?
+  telephone BigInt?
   email String @unique
   children Student[]
 
