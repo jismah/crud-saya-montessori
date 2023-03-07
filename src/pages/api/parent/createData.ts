@@ -3,26 +3,24 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 const prisma = new PrismaClient()
 
-type Data = {
-
-}
+type Data = {}
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
     if (req.method === 'POST') {
-        const {identityCard, name, lastName1, telephone, email} = req.body
+        const {identityCard, name, lastName1, lastName2, telephone, email} = req.body
         const parent = await prisma.parent.create({
             data: {
                 identityCard: identityCard,
                 name: name,
                 lastName1: lastName1,
+                lastName2: lastName2,
                 telephone: telephone,
                 email: email,
             }
         })
         res.status(200).json(parent);
-        console.log(parent)
     }
 }

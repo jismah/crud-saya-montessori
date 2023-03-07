@@ -16,7 +16,7 @@ export default async function handler(
             id: 4,
         },
         data: {
-            deleted: true,
+            updatedAt: new Date()
            
         }
     })

@@ -11,9 +11,13 @@ export default async function handler(
 ) {
     if (req.method === 'POST') {
         const {id} = req.body
-        const parent = await prisma.parent.delete({
+        const parent = await prisma.parent.update({
             where: {
                 id: id,
+            },
+            data: {
+                deleted: true,
+                updatedAt: new Date()
             }
         })
         res.status(200).json(parent);
