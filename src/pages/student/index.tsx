@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 const Student: NextPage = () => {
     return (
         <>
-            <h1>Student</h1>
+            <h1>Student Page</h1>
         </>
     )
 }
