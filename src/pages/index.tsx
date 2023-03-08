@@ -38,7 +38,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay
+  ModalOverlay,
+  Container
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon, EditIcon, MoonIcon, SunIcon, ViewIcon } from '@chakra-ui/icons';
 
@@ -75,12 +76,65 @@ const Home: NextPage = () => {
   // CREATE DATA
   const handleCreateData = async (e: React.FormEvent) => {
     e.preventDefault()
-    const res = await fetch('/api/parent/createData', {
+    if (editMode) {
+      handleUpdateDate()
+      onClose()
+    } else {
+        const res = await fetch('/api/parent/createData', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            identityCard: inputedData.identityCard,
+            name: inputedData.name,
+            lastName1: inputedData.lastName1,
+            lastName2: inputedData.lastName2,
+            telephone: inputedData.telephone,
+            email: inputedData.email,
+          })
+        });
+        const json = await res.json();
+
+        setInputedData({
+          id: "",
+          identityCard: "",
+          name: "",
+          lastName1: "",
+          lastName2: "",
+          telephone: "",
+          email: "",
+        })
+
+        toast({
+          title: 'Registro Creado!',
+          description: "Se creo el registro correctamente.",
+          status: 'success',
+          position: 'bottom-right',
+          duration: 4000,
+          isClosable: true,
+        })
+    }
+    setEditMode(false)
+    fetchData();
+  }
+
+  // EDIT DATA
+  const handleEditData = async (id: string, name: string, lastName1: string, lastName2: string, identityCard: string, telephone: string, email: string) => {
+    setInputedData({ id, name, lastName1, lastName2, identityCard, telephone, email })
+    onOpen()
+    console.log(id, name, lastName1, lastName2, identityCard, telephone, email)
+    setEditMode(true);
+  }
+
+  const handleUpdateDate = async () => {
+    const res = await fetch('/api/parent/updateData', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        id: inputedData.id,
         identityCard: inputedData.identityCard,
         name: inputedData.name,
         lastName1: inputedData.lastName1,
@@ -90,43 +144,10 @@ const Home: NextPage = () => {
       })
     });
     const json = await res.json();
-
-    setInputedData({
-      id: "",
-      identityCard: "",
-      name: "",
-      lastName1: "",
-      lastName2: "",
-      telephone: "",
-      email: "",
-    })
-
-    toast({
-      title: 'Registro Creado!',
-      description: "Se creo el registro correctamente.",
-      status: 'success',
-      position: 'bottom-right',
-      duration: 4000,
-      isClosable: true,
-    })
-
-    fetchData();
-  }
-
-  // EDIT DATA
-  const handleEditData = async (id: string, name: string, lastName1: string, lastName2: string, identityCard: string, telephone: string, email: string) => {
-    setInputedData({
-      id,
-      name,
-      lastName1,
-      lastName2,
-      identityCard,
-      telephone,
-      email
-    })
-    onOpen()
-    console.log(id, name, lastName1, lastName2, identityCard, telephone, email)
-    setEditMode(true);
+    console.log(json)
+    onClose()
+    setEditMode(false)
+    fetchData()
   }
 
   // DELETE DATA
@@ -162,14 +183,9 @@ const Home: NextPage = () => {
       </Head>
 
       <header>
-        <Box
-          bg={useColorModeValue('white', 'gray.800')}
-          color={useColorModeValue('gray.600', 'white')}
-          borderBottom={1}
-          borderStyle={'solid'}
-          borderColor={useColorModeValue('gray.200', 'gray.900')}
-          px={4}>
-          <Flex h={14} alignItems={'center'} justifyContent={'space-between'}>
+        {/* <Box px={4}>
+          <Flex as={"header"} position={"fixed"} backgroundColor="rgba(255,255, 255, 0.8)" backdropFilter="saturate(180%) blur(5px)"
+            w="100%" h={14} alignItems={'center'} justifyContent={'space-between'}>
             <Box>
 
               <Flex alignItems={'center'}>
@@ -219,64 +235,121 @@ const Home: NextPage = () => {
               </Stack>
             </Flex>
           </Flex>
-        </Box>
+        </Box> */}
       </header>
 
       <main>
         <>
-          <Box p={3}>
-            <Flex justifyContent={'right'}>
+          {/* NAVBAR */}
+          <Box>
+            <Flex py={2} px={4} alignItems={'center'} justifyContent={'space-between'} as="header" zIndex={200} position="fixed"
+              bg={useColorModeValue('rgba(255, 255, 255, 0.7)', 'rgba(26, 32, 44, 0.8)')} backdropFilter="saturate(180%) blur(5px)" w="100%" borderBottom={1} borderStyle={'solid'} borderColor={useColorModeValue('gray.200', 'gray.900')}>
+              <Box>
+
+                <Flex alignItems={'center'}>
+
+                  <Heading
+                    size='md'
+                    mr={5}
+                    textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+                    color={useColorModeValue('gray.800', 'white')}>
+                    Saya Montessori CRUD
+                  </Heading>
+
+                  <Button colorScheme='teal' variant={'ghost'}>
+                    Padres
+                  </Button>
+                  <Button colorScheme='teal' variant={'ghost'}>
+                    Estudiantes
+                  </Button>
+                </Flex>
+              </Box>
+
+              <Flex alignItems={'center'}>
+                <Stack direction={'row'} spacing={4}>
+
+
+                  <Button variant={'ghost'} onClick={toggleColorMode}>
+                    {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                  </Button>
+
+                  <Menu>
+                    <MenuButton
+                      as={Button}
+                      rounded={'full'}
+                      variant={'link'}
+                      cursor={'pointer'}
+                      minW={0}>
+                      <Avatar
+                        size={'sm'}
+                      />
+                    </MenuButton>
+                    <MenuList alignItems={'center'}>
+                      <MenuItem>Your Servers</MenuItem>
+                      <MenuItem>Account Settings</MenuItem>
+                      <MenuItem>Logout</MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Stack>
+              </Flex>
+            </Flex>
+          </Box>
+
+          {/* CONTAINER */}
+          <Box px={2}>
+            <Flex pt={20} justifyContent={'right'}>
               <Button onClick={onOpen} size='sm' leftIcon={<AddIcon />} variant={'outline'}>
                 Nuevo Padre
               </Button>
 
+              {/* MODAL CREATE & EDIT */}
               <Modal
                 isOpen={isOpen}
                 onClose={onClose}
               >
                 <ModalOverlay />
                 <ModalContent>
-                <form onSubmit={handleCreateData}>
-                  <ModalHeader>Crear Padre</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody pb={6}>
-                    
-                      <FormControl>
+                  <form onSubmit={handleCreateData}>
+                    <ModalHeader>Nuevo Padre</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+
+                      <FormControl mb={2}>
                         <FormLabel>Cedula</FormLabel>
                         <Input value={inputedData.identityCard || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, identityCard: e.target.value })} />
                       </FormControl>
 
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Nombre</FormLabel>
                         <Input value={inputedData.name || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, name: e.target.value })} />
                       </FormControl>
 
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Apellido</FormLabel>
                         <Input value={inputedData.lastName1 || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, lastName1: e.target.value })} />
                       </FormControl>
 
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Segundo Apellido</FormLabel>
                         <Input value={inputedData.lastName2 || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, lastName2: e.target.value })} />
                       </FormControl>
 
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Telefono</FormLabel>
                         <Input value={inputedData.telephone || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, telephone: e.target.value })} />
                       </FormControl>
 
-                      <FormControl>
+                      <FormControl mb={2}>
                         <FormLabel>Email</FormLabel>
                         <Input value={inputedData.email || ""} type="email" onChange={(e) => setInputedData({ ...inputedData, email: e.target.value })} />
                       </FormControl>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button type='submit' colorScheme='teal' mr={3}>
-                      Save
-                    </Button>
-                    <Button variant={'ghost'} onClick={onClose}>Cancel</Button>
-                  </ModalFooter>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button type='submit' colorScheme='teal' mr={3}>
+                        Agregar
+                      </Button>
+                      <Button variant={'ghost'} onClick={onClose}>Cancelar</Button>
+                    </ModalFooter>
                   </form>
                 </ModalContent>
               </Modal>
@@ -285,7 +358,7 @@ const Home: NextPage = () => {
 
             {loading ?
               <Center>
-                <Spinner size='xl' />
+                <Spinner color='teal' size='xl' />
               </Center>
               : <Box pt={4}>
                 <TableContainer>
@@ -334,56 +407,11 @@ const Home: NextPage = () => {
                   </Table>
                 </TableContainer>
               </Box>}
-
-
-
-
-            {/* <Box pt={5}>
-              <form onSubmit={handleCreateData}>
-
-                <FormControl>
-                  <FormLabel>Identity Card</FormLabel>
-                  <Input value={inputedData.identityCard || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, identityCard: e.target.value })} />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Name</FormLabel>
-                  <Input value={inputedData.name || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, name: e.target.value })} />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>LastName</FormLabel>
-                  <Input value={inputedData.lastName1 || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, lastName1: e.target.value })} />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Second LastName</FormLabel>
-                  <Input value={inputedData.lastName2 || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, lastName2: e.target.value })} />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Telephone</FormLabel>
-                  <Input value={inputedData.telephone || ""} type="text" onChange={(e) => setInputedData({ ...inputedData, telephone: e.target.value })} />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Email</FormLabel>
-                  <Input value={inputedData.email || ""} type="email" onChange={(e) => setInputedData({ ...inputedData, email: e.target.value })} />
-                </FormControl>
-
-                <Button type='submit' mt={5} colorScheme='blue' variant='outline'>
-                  Save
-                </Button>
-
-              </form>
-            </Box> */}
-
-
           </Box>
         </>
 
-      </main >
-    </div >
+      </main>
+    </div>
   )
 }
 
