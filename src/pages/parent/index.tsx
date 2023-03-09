@@ -1,24 +1,14 @@
 import { NextPage } from 'next';
 import Head from 'next/head'
-import NextLink from 'next/link'
 import { useEffect, useState } from 'react'
 import {
   Box,
   Flex,
-  Avatar,
   Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   useDisclosure,
-  useColorModeValue,
-  Stack,
   useColorMode,
   Spinner,
-  Heading,
   Center,
-  useBreakpointValue,
   Table,
   TableContainer,
   Tbody,
@@ -39,12 +29,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
-  Container,
-  Link
-} from '@chakra-ui/react';
-import { AddIcon, DeleteIcon, EditIcon, MoonIcon, SunIcon, ViewIcon } from '@chakra-ui/icons';
-import Navbar from '../../../components/Navbar';
+  ModalOverlay} from '@chakra-ui/react';
+import { AddIcon, DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 
 const Parent: NextPage = () => {
 
