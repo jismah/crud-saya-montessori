@@ -29,7 +29,14 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay} from '@chakra-ui/react';
+  ModalOverlay,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay
+} from '@chakra-ui/react';
 import { AddIcon, DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 
 const Parent: NextPage = () => {
@@ -263,7 +270,7 @@ const Parent: NextPage = () => {
                               <ButtonGroup variant='ghost' spacing='1'>
                                 <IconButton colorScheme='blue' icon={<ViewIcon />} aria-label='Show'></IconButton>
                                 <IconButton onClick={() => handleEditData(id, name, lastName1, lastName2, identityCard, telephone, email)} colorScheme='green' icon={<EditIcon />} aria-label='Edit'></IconButton>
-                                <IconButton onClick={() => handleDeleteData(id)} icon={<DeleteIcon />} colorScheme='red' aria-label='Delete'></IconButton >
+                                <IconButton onClick={() => handleDeleteData(id)} icon={<DeleteIcon />} colorScheme='red' aria-label='Delete'></IconButton>
                               </ButtonGroup>
                             </Td>
                           </Tr>

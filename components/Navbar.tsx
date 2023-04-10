@@ -61,7 +61,6 @@ const Navbar: React.FC = () => {
                                     />
                                 </MenuButton>
                                 <MenuList alignItems={'center'}>
-                                    <MenuItem>Your Servers</MenuItem>
                                     <MenuItem>Account Settings</MenuItem>
                                     <MenuItem>Logout</MenuItem>
                                 </MenuList>
